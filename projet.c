@@ -6,7 +6,7 @@
 // Définition de la structure d'un nœud
 typedef struct Noeud {
     char key;                   // Clé du nœud (par exemple, A, B, C, etc.)
-    int priority;               // Priorité du nœud
+    int priorite;               // Priorité du nœud
     struct Noeud* gauche;       // Pointeur vers le fils gauche
     struct Noeud* droit;        // Pointeur vers le fils droit
 } Noeud;
