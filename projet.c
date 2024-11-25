@@ -103,6 +103,27 @@ void priorityOrderTraversal(Node* root) {
         priorityOrderTraversal(root->right);
     }
 }
+
+//QUESTION 2.1
+// Fonction pour rechercher un nœud par clé dans l'arbre cartésien
+Node* searchNode(Node* root, int key) {
+    if (root == NULL) {
+        // La clé n'est pas trouvée
+        return NULL;
+    }
+
+    if (key == root->key) {
+        // La clé correspond à la clé du nœud courant
+        return root;
+    } else if (key < root->key) {
+        // Recherche dans le sous-arbre gauche
+        return searchNode(root->left, key);
+    } else {
+        // Recherche dans le sous-arbre droit
+        return searchNode(root->right, key);
+    }
+}
+
 // Exemple d'utilisation
 int main() {
     CartesianTree* tree = createCartesianTree();
@@ -124,6 +145,16 @@ int main() {
     // Affichage de l'arbre
     printf("Arbre cartesien en parcours infixe :\n");
     priorityOrderTraversal(tree->root);
+
+    // Recherche d'une clé
+    int searchKey = 4;
+    Node* result = searchNode(tree->root, searchKey);
+
+    if (result != NULL) {
+        printf("\nNoeud trouve : Cle = %d, Priorite = %d\n", result->key, result->priority);
+    } else {
+        printf("\nCle %d non trouvee dans l'arbre.\n", searchKey);
+    }
 
     // Libération de mémoire omise pour simplification
     return 0;
