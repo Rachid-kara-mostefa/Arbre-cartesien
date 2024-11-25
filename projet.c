@@ -19,7 +19,7 @@ Noeud* creerNoeud(char key, int priorite) {
         exit(EXIT_FAILURE);
     }
     newNoeud->key = key;
-    newNoeud->priority = priorite;
+    newNoeud->priorite = priorite;
     newNoeud->gauche = NULL;
     newNoeud->droit = NULL;
     return newNoeud;
