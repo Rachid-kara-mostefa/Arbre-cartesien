@@ -7,19 +7,19 @@
 typedef struct Noeud {
     char key;                  
     int priorite;              
-    struct Noeud* gauche;      // pointeur vers le sous arbre gauche
-    struct Noeud* droit;       // pointeur vers le sous arbre droit
+    struct Noeud* gauche;      // pointeur vers le noeud gauche
+    struct Noeud* droit;       // pointeur vers le noeud droit
 } Noeud;
 
 // Fonction pour créer un nouveau nœud
-Noeud* creerNoeud(char key, int priority) {
+Noeud* creerNoeud(char key, int priorite) {
     Noeud* newNoeud = (Noeud*)malloc(sizeof(Noeud));
     if (!newNoeud) {
         perror("Erreur d'allocation mémoire");
         exit(EXIT_FAILURE);
     }
     newNoeud->key = key;
-    newNoeud->priority = priority;
+    newNoeud->priority = priorite;
     newNoeud->gauche = NULL;
     newNoeud->droit = NULL;
     return newNoeud;
@@ -48,23 +48,23 @@ Noeud* rotateLeft(Noeud* y) {
 }
 
 // Fonction pour insérer un nœud dans l'arbre cartésien
-Noeud* insererNoeud(Noeud* racine, char key, int priority) {
+Noeud* insererNoeud(Noeud* racine, char key, int priorite) {
     // Cas de base : l'arbre est vide
     if (racine == NULL)
-        return creerNoeud(key, priority);
+        return creerNoeud(key, priorite);
 
     // Insertion selon l'ordre des clés (ABR)
     if (key < racine->key)
-        racine->gauche = insererNoeud(racine->gauche, key, priority);
+        racine->gauche = insererNoeud(racine->gauche, key, priorite);
     else if (key > racine->key)
-        racine->droit = insererNoeud(racine->droit, key, priority);
+        racine->droit = insererNoeud(racine->droit, key, priorite);
     else
         return racine; // Pas de clés dupliquées
 
     // Ajustement pour maintenir la propriété du tas
-    if (racine->gauche && racine->gauche->priority < racine->priority)
+    if (racine->gauche && racine->gauche->priorite < racine->priorite)
         racine = rotateRight(racine);
-    if (racine->droit && racine->droit->priority < racine->priority)
+    if (racine->droit && racine->droit->priorite < racine->priorite)
         racine = rotateLeft(racine);
 
     return racine;
@@ -74,7 +74,7 @@ Noeud* insererNoeud(Noeud* racine, char key, int priority) {
 void afficherArbre(Noeud* racine) {
     if (racine != NULL) {
         afficherArbre(racine->gauche);
-        printf("(%c, %d) ", racine->key, racine->priority);
+        printf("(%c, %d) ", racine->key, racine->priorite);
         afficherArbre(racine->droit);
     }
 }
