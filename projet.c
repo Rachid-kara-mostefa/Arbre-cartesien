@@ -1,116 +1,130 @@
-#include<stdlib.h>
-#include<stdio.h>
-#include<math.h>
+#include <stdio.h>
+#include <stdlib.h>
 
+// Structure de données d'un noeud
+typedef struct Node {
+    int key;                  
+    int priority;             
+    struct Node* left;        
+    struct Node* right;       
+} Node;
 
-// Définition de la structure d'un nœud
-typedef struct Noeud {
-    char key;                  
-    int priorite;              
-    struct Noeud* gauche;      // pointeur vers le noeud gauche
-    struct Noeud* droit;       // pointeur vers le noeud droit
-} Noeud;
+// Structure d'un arbre cartésien
+typedef struct CartesianTree {
+    Node* root;               // Racine de l'arbre
+} CartesianTree;
 
-// Fonction pour créer un nouveau nœud
-Noeud* creerNoeud(char key, int priorite) {
-    Noeud* newNoeud = (Noeud*)malloc(sizeof(Noeud));
-    if (!newNoeud) {
-        perror("Erreur d'allocation mémoire");
+// Fonction pour créer un nœud
+Node* createNode(int key, int priority) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    if (newNode == NULL) {
+        printf("Erreur : impossible d'allouer l'espace memoire !!!\n");
         exit(EXIT_FAILURE);
     }
-    newNoeud->key = key;
-    newNoeud->priorite = priorite;
-    newNoeud->gauche = NULL;
-    newNoeud->droit = NULL;
-    return newNoeud;
+    newNode->key = key;
+    newNode->priority = priority;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+// Fonction pour initialiser un arbre cartésien vide
+CartesianTree* createCartesianTree() {
+    CartesianTree* tree = (CartesianTree*)malloc(sizeof(CartesianTree));
+    if (tree == NULL) {
+        printf("Erreur : allocation mémoire échouée.\n");
+        exit(EXIT_FAILURE);
+    }
+    tree->root = NULL;
+    return tree;
+}
+
+// Fonction pour vérifier si l'arbre est vide
+int isTreeEmpty(CartesianTree* tree) {
+    return tree->root == NULL;
 }
 
 // Fonction pour effectuer une rotation à droite
-Noeud* rotateRight(Noeud* y) {
-    Noeud* x = y->gauche;
-    Noeud* T = x->droit;
-
-    x->droit = y;
-    y->gauche = T;
-
-    return x; // Nouvelle racine après la rotation
+Node* rotateRight(Node* root) {
+    Node* newRoot = root->left;
+    root->left = newRoot->right;
+    newRoot->right = root;
+    return newRoot;
 }
 
 // Fonction pour effectuer une rotation à gauche
-Noeud* rotateLeft(Noeud* y) {
-    Noeud* x = y->droit;
-    Noeud* T = x->gauche;
+Node* rotateLeft(Node* root) {
+    Node* newRoot = root->right;
+    root->right = newRoot->left;
+    newRoot->left = root;
+    return newRoot;
+}
 
-    x->gauche = y;
-    y->droit = T;
+// Fonction pour insérer un nœud tout en respectant les propriétés de l'arbre cartésien
+Node* insertNode(Node* root, int key, int priority) {
+    if (root == NULL) {
+        return createNode(key, priority);
+    }
 
-    return x; // Nouvelle racine après la rotation
+    // Insertion selon l'arbre binaire de recherche
+    if (key < root->key) {
+        root->left = insertNode(root->left, key, priority);
+
+        // Rééquilibrage pour respecter la propriété du tas
+        if (root->left->priority < root->priority) {
+            root = rotateRight(root);
+        }
+    } else if (key > root->key) {
+        root->right = insertNode(root->right, key, priority);
+
+        // Rééquilibrage pour respecter la propriété du tas
+        if (root->right->priority < root->priority) {
+            root = rotateLeft(root);
+        }
+    }
+
+    return root;
 }
 
 // Fonction pour insérer un nœud dans l'arbre cartésien
-Noeud* insererNoeud(Noeud* racine, char key, int priorite) {
-    // Cas de base : l'arbre est vide
-    if (racine == NULL)
-        return creerNoeud(key, priorite);
-
-    // Insertion selon l'ordre des clés (ABR)
-    if (key < racine->key)
-        racine->gauche = insererNoeud(racine->gauche, key, priorite);
-    else if (key > racine->key)
-        racine->droit = insererNoeud(racine->droit, key, priorite);
-    else
-        return racine; // Pas de clés dupliquées
-
-    // Ajustement pour maintenir la propriété du tas
-    if (racine->gauche && racine->gauche->priorite < racine->priorite)
-        racine = rotateRight(racine);
-    if (racine->droit && racine->droit->priorite < racine->priorite)
-        racine = rotateLeft(racine);
-
-    return racine;
+void insertIntoTree(CartesianTree* tree, int key, int priority) {
+    tree->root = insertNode(tree->root, key, priority);
 }
 
-// Fonction pour afficher l'arbre en ordre (parcours infixe)
-void afficherArbre(Noeud* racine) {
-    if (racine != NULL) {
-        afficherArbre(racine->gauche);
-        printf("(%c, %d) ", racine->key, racine->priorite);
-        afficherArbre(racine->droit);
+
+// Fonction pour afficher l'arbre par ordre de priorité
+void priorityOrderTraversal(Node* root) {
+    if (root != NULL) {
+        // Affiche d'abord la racine (propriété de tas : plus haute priorité)
+        printf("(Cle: %d, Priorite: %d) ", root->key, root->priority);
+
+        // Parcours des sous-arbres gauche et droit
+        priorityOrderTraversal(root->left);
+        priorityOrderTraversal(root->right);
     }
 }
-
-// Fonction pour libérer la mémoire de l'arbre
-void freeTree(Noeud* racine) {
-    if (racine != NULL) {
-        freeTree(racine->gauche);
-        freeTree(racine->droit);
-        free(racine);
-    }
-}
-
 // Exemple d'utilisation
 int main() {
-    Noeud* racine = NULL;
+    CartesianTree* tree = createCartesianTree();
 
     // Insertion de nœuds
-    racine = insererNoeud(racine, 'A', 5);
-    racine = insererNoeud(racine, 'B', 3);
-    racine = insererNoeud(racine, 'C', 8);
-    racine = insererNoeud(racine, 'D', 2);
-    racine = insererNoeud(racine, 'E', 6);
-    racine = insererNoeud(racine, 'F', 7);
-    racine = insererNoeud(racine, 'G', 9);
-    racine = insererNoeud(racine, 'H', 1);
-    racine = insererNoeud(racine, 'I', 10);
-    racine = insererNoeud(racine, 'J', 12);
+    insertIntoTree(tree, 8, 100);
+    insertIntoTree(tree, 2, 300);
+    insertIntoTree(tree, 3, 800);
+    insertIntoTree(tree, 4, 200);
+    insertIntoTree(tree, 7, 900);
+    insertIntoTree(tree, 9, 1000);
+    insertIntoTree(tree, 10, 1200);
+    insertIntoTree(tree, 1, 500);
+    insertIntoTree(tree, 5, 600);
+    insertIntoTree(tree, 6, 700);
+
+
 
     // Affichage de l'arbre
-    printf("Parcours infixe de l'arbre cartésien :\n");
-    afficherArbre(racine);
-    printf("\n");
+    printf("Arbre cartesien en parcours infixe :\n");
+    priorityOrderTraversal(tree->root);
 
-    // Libération de la mémoire
-    freeTree(racine);
-
+    // Libération de mémoire omise pour simplification
     return 0;
 }
