@@ -100,6 +100,9 @@ int main() {
     racine = insererNoeud(racine, 'E', 6);
     racine = insererNoeud(racine, 'F', 7);
     racine = insererNoeud(racine, 'G', 9);
+    racine = insererNoeud(racine, 'H', 1);
+    racine = insererNoeud(racine, 'I', 10);
+    racine = insererNoeud(racine, 'J', 12);
 
     // Affichage de l'arbre
     printf("Parcours infixe de l'arbre cartésien :\n");
