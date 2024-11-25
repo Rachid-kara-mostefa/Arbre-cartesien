@@ -3,159 +3,127 @@
 
 // Structure de données d'un noeud
 typedef struct Node {
-    int key;                  
-    int priority;             
-    struct Node* left;        
-    struct Node* right;       
+    char cle;                  
+    int priorite;             
+    struct Node* gauche;        
+    struct Node* droit;       
 } Node;
 
-// Structure d'un arbre cartésien
-typedef struct CartesianTree {
-    Node* root;               // Racine de l'arbre
-} CartesianTree;
+// Structure de données d'un arbre cartésien
+typedef struct arbre_cartesien {
+    Node* racine;               
+} arbre_cartesien;
 
-// Fonction pour créer un nœud
-Node* createNode(int key, int priority) {
+// Creation d'un noeud
+Node* creer_node(int cle, int priorite) {
     Node* newNode = (Node*)malloc(sizeof(Node));
     if (newNode == NULL) {
         printf("Erreur : impossible d'allouer l'espace memoire !!!\n");
         exit(EXIT_FAILURE);
     }
-    newNode->key = key;
-    newNode->priority = priority;
-    newNode->left = NULL;
-    newNode->right = NULL;
+    newNode->cle = cle;
+    newNode->priorite = priorite;
+    newNode->gauche = NULL;
+    newNode->droit = NULL;
     return newNode;
 }
 
-// Fonction pour initialiser un arbre cartésien vide
-CartesianTree* createCartesianTree() {
-    CartesianTree* tree = (CartesianTree*)malloc(sizeof(CartesianTree));
-    if (tree == NULL) {
+// Iinitialisation de l'arbre cartésien 
+arbre_cartesien* creer_arbre_cartesien() {
+    arbre_cartesien* arbre = (arbre_cartesien*)malloc(sizeof(arbre_cartesien));
+    if (arbre == NULL) {
         printf("Erreur : allocation mémoire échouée.\n");
         exit(EXIT_FAILURE);
     }
-    tree->root = NULL;
-    return tree;
+    arbre->racine = NULL;
+    return arbre;
 }
 
-// Fonction pour vérifier si l'arbre est vide
-int isTreeEmpty(CartesianTree* tree) {
-    return tree->root == NULL;
+// Vérifier si l'arbre est vide
+int arbre_vide(arbre_cartesien* arbre) {
+    return arbre->racine == NULL;
 }
 
-// Fonction pour effectuer une rotation à droite
-Node* rotateRight(Node* root) {
-    Node* newRoot = root->left;
-    root->left = newRoot->right;
-    newRoot->right = root;
-    return newRoot;
+//  Rotation à droite pour respecter les priorites des nodes
+Node* rotation_droite(Node* racine) {
+    Node* newRacine = racine->gauche;
+    racine->gauche = newRacine->droit;
+    newRacine->droit = racine;
+    return newRacine;
 }
 
-// Fonction pour effectuer une rotation à gauche
-Node* rotateLeft(Node* root) {
-    Node* newRoot = root->right;
-    root->right = newRoot->left;
-    newRoot->left = root;
-    return newRoot;
+//  Rotation à gauche pour respecter les priorites des nodes
+Node* rotation_gauche(Node* racine) {
+    Node* newRacine = racine->droit;
+    racine->droit = newRacine->gauche;
+    newRacine->gauche = racine;
+    return newRacine;
 }
 
-// Fonction pour insérer un nœud tout en respectant les propriétés de l'arbre cartésien
-Node* insertNode(Node* root, int key, int priority) {
-    if (root == NULL) {
-        return createNode(key, priority);
+// Insérer un node dans l'arbre cartésien
+Node* inserer_node(Node* racine, int cle, int priorite) {
+    if (racine == NULL) {
+        return creer_node(cle, priorite);
     }
 
-    // Insertion selon l'arbre binaire de recherche
-    if (key < root->key) {
-        root->left = insertNode(root->left, key, priority);
+    // Insertion suivant les propriétés de l'arbre binaire de recherche
+    if (cle < racine->cle) {
+        racine->gauche = inserer_node(racine->gauche, cle, priorite);
 
-        // Rééquilibrage pour respecter la propriété du tas
-        if (root->left->priority < root->priority) {
-            root = rotateRight(root);
+        // Rotation pour respecter les propriétés du tas
+        if (racine->gauche->priorite < racine->priorite) {
+            racine = rotation_droite(racine);
         }
-    } else if (key > root->key) {
-        root->right = insertNode(root->right, key, priority);
+    } else if (cle > racine->cle) {
+        racine->droit = inserer_node(racine->droit, cle, priorite);
 
-        // Rééquilibrage pour respecter la propriété du tas
-        if (root->right->priority < root->priority) {
-            root = rotateLeft(root);
+        // Rotation pour respecter les propriétés du tas
+        if (racine->droit->priorite < racine->priorite) {
+            racine = rotation_gauche(racine);
         }
     }
 
-    return root;
+    return racine;
 }
 
-// Fonction pour insérer un nœud dans l'arbre cartésien
-void insertIntoTree(CartesianTree* tree, int key, int priority) {
-    tree->root = insertNode(tree->root, key, priority);
+// Insertion du noeud dans l'arbre cartésien
+void inserer_dans_arbre(arbre_cartesien* arbre, int cle, int priorite) {
+    arbre->racine = inserer_node(arbre->racine, cle, priorite);
 }
 
 
-// Fonction pour afficher l'arbre par ordre de priorité
-void priorityOrderTraversal(Node* root) {
-    if (root != NULL) {
-        // Affiche d'abord la racine (propriété de tas : plus haute priorité)
-        printf("(Cle: %d, Priorite: %d) ", root->key, root->priority);
+// Afficher l'arbre resultant par ordre de priorité des nodes
+void afficher_arbre(Node* racine) {
+    if (racine != NULL) {
+        // Afficher la racine (propriété de tas : plus haute priorité)
+        printf("(Cle: %d, Priorite: %d) ", racine->cle, racine->priorite);
 
-        // Parcours des sous-arbres gauche et droit
-        priorityOrderTraversal(root->left);
-        priorityOrderTraversal(root->right);
+        // Parcourir les sous-arbres gauche et droit
+        afficher_arbre(racine->gauche);
+        afficher_arbre(racine->droit);
     }
 }
 
-//QUESTION 2.1
-// Fonction pour rechercher un nœud par clé dans l'arbre cartésien
-Node* searchNode(Node* root, int key) {
-    if (root == NULL) {
-        // La clé n'est pas trouvée
-        return NULL;
-    }
-
-    if (key == root->key) {
-        // La clé correspond à la clé du nœud courant
-        return root;
-    } else if (key < root->key) {
-        // Recherche dans le sous-arbre gauche
-        return searchNode(root->left, key);
-    } else {
-        // Recherche dans le sous-arbre droit
-        return searchNode(root->right, key);
-    }
-}
-
-// Exemple d'utilisation
 int main() {
-    CartesianTree* tree = createCartesianTree();
+    arbre_cartesien* arbre = creer_arbre_cartesien();
 
-    // Insertion de nœuds
-    insertIntoTree(tree, 8, 100);
-    insertIntoTree(tree, 2, 300);
-    insertIntoTree(tree, 3, 800);
-    insertIntoTree(tree, 4, 200);
-    insertIntoTree(tree, 7, 900);
-    insertIntoTree(tree, 9, 1000);
-    insertIntoTree(tree, 10, 1200);
-    insertIntoTree(tree, 1, 500);
-    insertIntoTree(tree, 5, 600);
-    insertIntoTree(tree, 6, 700);
-
+    inserer_dans_arbre(arbre, 8, 100);
+    inserer_dans_arbre(arbre, 2, 300);
+    inserer_dans_arbre(arbre, 3, 800);
+    inserer_dans_arbre(arbre, 4, 200);
+    inserer_dans_arbre(arbre, 7, 900);
+    inserer_dans_arbre(arbre, 9, 1000);
+    inserer_dans_arbre(arbre, 10, 1200);
+    inserer_dans_arbre(arbre, 1, 500);
+    inserer_dans_arbre(arbre, 5, 600);
+    inserer_dans_arbre(arbre, 6, 700);
 
 
-    // Affichage de l'arbre
-    printf("Arbre cartesien en parcours infixe :\n");
-    priorityOrderTraversal(tree->root);
 
-    // Recherche d'une clé
-    int searchKey = 4;
-    Node* result = searchNode(tree->root, searchKey);
-
-    if (result != NULL) {
-        printf("\nNoeud trouve : Cle = %d, Priorite = %d\n", result->key, result->priority);
-    } else {
-        printf("\nCle %d non trouvee dans l'arbre.\n", searchKey);
-    }
-
+    // Afficher l'arbre
+    printf("Arbre cartesien :\n");
+    afficher_arbre(arbre->racine);
+        //*-------------*//
     // Libération de mémoire omise pour simplification
     return 0;
 }
