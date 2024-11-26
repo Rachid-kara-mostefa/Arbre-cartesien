@@ -15,7 +15,7 @@ typedef struct arbre_cartesien {
 } arbre_cartesien;
 
 // Creation d'un noeud
-Node* creer_node(int cle, int priorite) {
+Node* creer_node(char cle, int priorite) {
     Node* newNode = (Node*)malloc(sizeof(Node));
     if (newNode == NULL) {
         printf("Erreur : impossible d'allouer l'espace memoire !!!\n");
@@ -61,7 +61,7 @@ Node* rotation_gauche(Node* racine) {
 }
 
 // Insérer un node dans l'arbre cartésien
-Node* inserer_node(Node* racine, int cle, int priorite) {
+Node* inserer_node(Node* racine, char cle, int priorite) {
     if (racine == NULL) {
         return creer_node(cle, priorite);
     }
@@ -87,7 +87,7 @@ Node* inserer_node(Node* racine, int cle, int priorite) {
 }
 
 // Insertion du noeud dans l'arbre cartésien
-void inserer_dans_arbre(arbre_cartesien* arbre, int cle, int priorite) {
+void inserer_dans_arbre(arbre_cartesien* arbre, char cle, int priorite) {
     arbre->racine = inserer_node(arbre->racine, cle, priorite);
 }
 
@@ -95,11 +95,14 @@ void inserer_dans_arbre(arbre_cartesien* arbre, int cle, int priorite) {
 // Afficher l'arbre resultant par ordre de priorité des nodes
 void afficher_arbre(Node* racine) {
     if (racine != NULL) {
-        // Afficher la racine (propriété de tas : plus haute priorité)
-        printf("(Cle: %d, Priorite: %d) ", racine->cle, racine->priorite);
 
-        // Parcourir les sous-arbres gauche et droit
-        afficher_arbre(racine->gauche);
+        // Parcourir le sous-arbre gauche 
+        afficher_arbre(racine->gauche);    
+
+        // Afficher le noeud
+        printf("(Cle: %c, Priorite: %d) ", racine->cle, racine->priorite);
+
+        // Parcourir le sous-arbre droit
         afficher_arbre(racine->droit);
     }
 }
@@ -107,16 +110,16 @@ void afficher_arbre(Node* racine) {
 int main() {
     arbre_cartesien* arbre = creer_arbre_cartesien();
 
-    inserer_dans_arbre(arbre, 8, 100);
-    inserer_dans_arbre(arbre, 2, 300);
-    inserer_dans_arbre(arbre, 3, 800);
-    inserer_dans_arbre(arbre, 4, 200);
-    inserer_dans_arbre(arbre, 7, 900);
-    inserer_dans_arbre(arbre, 9, 1000);
-    inserer_dans_arbre(arbre, 10, 1200);
-    inserer_dans_arbre(arbre, 1, 500);
-    inserer_dans_arbre(arbre, 5, 600);
-    inserer_dans_arbre(arbre, 6, 700);
+    inserer_dans_arbre(arbre, 'G', 100);
+    inserer_dans_arbre(arbre, 'B', 300);
+    inserer_dans_arbre(arbre, 'C', 800);
+    inserer_dans_arbre(arbre, 'D', 200);
+    inserer_dans_arbre(arbre, 'F', 900);
+    inserer_dans_arbre(arbre, 'H', 1000);
+    inserer_dans_arbre(arbre, 'I', 1200);
+    inserer_dans_arbre(arbre, 'A', 500);
+    inserer_dans_arbre(arbre, 'D', 600);
+    inserer_dans_arbre(arbre, 'E', 700);
 
 
 
