@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -96,11 +97,11 @@ void inserer_dans_arbre(arbre_cartesien* arbre, char cle, int priorite) {
 void afficher_arbre(Node* racine) {
     if (racine != NULL) {
 
-        // Parcourir le sous-arbre gauche 
-        afficher_arbre(racine->gauche);    
-
         // Afficher le noeud
         printf("(Cle: %c, Priorite: %d) ", racine->cle, racine->priorite);
+
+        // Parcourir le sous-arbre gauche 
+        afficher_arbre(racine->gauche);    
 
         // Parcourir le sous-arbre droit
         afficher_arbre(racine->droit);
@@ -109,18 +110,21 @@ void afficher_arbre(Node* racine) {
 
 int main() {
     arbre_cartesien* arbre = creer_arbre_cartesien();
-
-    inserer_dans_arbre(arbre, 'G', 100);
-    inserer_dans_arbre(arbre, 'B', 300);
-    inserer_dans_arbre(arbre, 'C', 800);
-    inserer_dans_arbre(arbre, 'D', 200);
-    inserer_dans_arbre(arbre, 'F', 900);
-    inserer_dans_arbre(arbre, 'H', 1000);
-    inserer_dans_arbre(arbre, 'I', 1200);
-    inserer_dans_arbre(arbre, 'A', 500);
-    inserer_dans_arbre(arbre, 'D', 600);
-    inserer_dans_arbre(arbre, 'E', 700);
-
+/*
+    inserer_dans_arbre(arbre, 'H', 1);
+    inserer_dans_arbre(arbre, 'D', 2);
+    inserer_dans_arbre(arbre, 'B', 3);
+    inserer_dans_arbre(arbre, 'A', 5);
+    inserer_dans_arbre(arbre, 'E', 6);
+    inserer_dans_arbre(arbre, 'F', 7);
+    inserer_dans_arbre(arbre, 'C', 8);
+    inserer_dans_arbre(arbre, 'G', 9);
+    inserer_dans_arbre(arbre, 'I', 10);
+    inserer_dans_arbre(arbre, 'J', 12);
+*/
+    inserer_dans_arbre(arbre, 'A', 5);
+    inserer_dans_arbre(arbre, 'C', 8);
+    inserer_dans_arbre(arbre, 'B', 3);
 
 
     // Afficher l'arbre
