@@ -108,6 +108,38 @@ void afficher_arbre(Node* racine) {
     }
 }
 
+Node* supprimer_node(Node* racine, char cle) {
+    if (racine == NULL) {
+        return NULL; // Nœud non trouvé
+    }
+
+    // Recherche du nœud à supprimer
+    if (cle < racine->cle) {
+        racine->gauche = supprimer_node(racine->gauche, cle);
+    } else if (cle > racine->cle) {
+        racine->droit = supprimer_node(racine->droit, cle);
+    } else {
+        // Nœud trouvé : appliquer des rotations pour l'amener à une feuille
+        if (racine->gauche == NULL && racine->droit == NULL) {
+            free(racine); // Suppression si feuille
+            return NULL;
+        } else if (racine->gauche == NULL || 
+                   (racine->droit != NULL && racine->droit->priorite < racine->gauche->priorite)) {
+            racine = rotation_gauche(racine);
+            racine->gauche = supprimer_node(racine->gauche, cle);
+        } else {
+            racine = rotation_droite(racine);
+            racine->droit = supprimer_node(racine->droit, cle);
+        }
+    }
+    return racine;
+}
+
+void supprimer_dans_arbre(arbre_cartesien* arbre, char cle) {
+    arbre->racine = supprimer_node(arbre->racine, cle);
+}
+
+
 int main() {
     arbre_cartesien* arbre = creer_arbre_cartesien();
 
@@ -151,5 +183,19 @@ int main() {
     afficher_arbre(arbre->racine);
         //*-------------*//
     // Libération de mémoire omise pour simplification
+
+    printf("\nSuppression de (A : 5) :\n");
+    supprimer_dans_arbre(arbre, 'A');
+    afficher_arbre(arbre->racine);
+
+    printf("\nSuppression de (J : 12) :\n");
+    supprimer_dans_arbre(arbre, 'J');
+    afficher_arbre(arbre->racine);
+
+    printf("\nSuppression de (H : 1) :\n");
+    supprimer_dans_arbre(arbre, 'H');
+    afficher_arbre(arbre->racine);
+
+
     return 0;
 }
