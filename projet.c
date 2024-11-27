@@ -1,4 +1,10 @@
+/*
+21212724 - RACHID KARA MOSTEFA
+28726079 - THEO GROSS
 
+PROJET COMPLEX 2024
+
+*/
 #include <stdio.h>
 #include <stdlib.h>
 
