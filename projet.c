@@ -145,6 +145,30 @@ void supprimer_dans_arbre(arbre_cartesien* arbre, char cle) {
     arbre->racine = supprimer_node(arbre->racine, cle);
 }
 
+// Recherche d'un noeud contenant une clé donnée
+Node* rechercher_node(Node* racine, char cle) {
+    if (racine == NULL) {
+        printf("La cle %c n'existe pas dans l'arbre.\n", cle);
+        return NULL;
+    }
+
+    if (cle == racine->cle) {
+        printf("Noeud trouve : (Cle: %c, Priorite: %d)\n", racine->cle, racine->priorite);
+        return racine;
+    }
+
+    if (cle < racine->cle) {
+        return rechercher_node(racine->gauche, cle);
+    } else {
+        return rechercher_node(racine->droit, cle);
+    }
+}
+
+// Recherche dans l'arbre cartésien
+void rechercher_dans_arbre(arbre_cartesien* arbre, char cle) {
+    rechercher_node(arbre->racine, cle);
+}
+
 
 int main() {
     arbre_cartesien* arbre = creer_arbre_cartesien();
@@ -187,9 +211,20 @@ int main() {
     // Afficher l'arbre
     printf("Arbre cartesien :\n");
     afficher_arbre(arbre->racine);
+       
         //*-------------*//
-    // Libération de mémoire omise pour simplification
 
+    // Recherche de nœuds
+    printf("\nRecherche du noeud avec la cle 'A' :\n");
+    rechercher_dans_arbre(arbre, 'A');
+
+    printf("\nRecherche du noeud avec la cle 'H' :\n");
+    rechercher_dans_arbre(arbre, 'H');
+
+    printf("\nRecherche du noeud avec la cle 'Z' :\n");
+    rechercher_dans_arbre(arbre, 'Z');
+
+    // Suppression de noeud
     printf("\nSuppression de (A : 5) :\n");
     supprimer_dans_arbre(arbre, 'A');
     afficher_arbre(arbre->racine);
